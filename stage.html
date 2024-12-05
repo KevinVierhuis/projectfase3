@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stage</title>
+    <link rel="stylesheet" href="beheer.css">
+</head>
+<body>
+    <header id="stage-header">
+        <h1>Stagepagina</h1>
+    </header>
+
+    <main id="stage-content">
+        <div id="content">
+            <!-- Dynamische inhoud wordt hier geladen -->
+        </div>
+    </main>
+
+    <footer id="stage-footer">
+        <p>&copy; 2024 Stagepagina</p>
+    </footer>
+
+    <script>
+        // Laad de opgeslagen inhoud (indien beschikbaar) vanuit localStorage
+        document.addEventListener("DOMContentLoaded", () => {
+            const opgeslagenInhoud = localStorage.getItem("stageInhoud");
+            const contentDiv = document.getElementById("content");
+
+            if (opgeslagenInhoud) {
+                contentDiv.innerHTML = opgeslagenInhoud;
+            } else {
+                contentDiv.innerHTML = "<p>Welkom op de stagepagina. Pas deze inhoud aan via de beheerpagina.</p>";
+            }
+        });
+    </script>
+</body>
+</html>

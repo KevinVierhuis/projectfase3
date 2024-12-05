@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beheer Stagepagina</title>
+    <link rel="stylesheet" href="beheer.css">
+</head>
+<body>
+    <header id="beheer-header">
+        <h1>Beheer Stagepagina</h1>
+    </header>
+
+    <main id="beheer-main">
+        <section id="pagina-beheer-section">
+            <h2>Stagepagina Aanpassen</h2>
+            <div id="editor-container">
+                <h3>Inhoud Bewerken</h3>
+                <textarea id="pagina-editor" placeholder="Inhoud van de pagina..." rows="15"></textarea>
+                <button id="opslaan-button">Opslaan</button>
+            </div>
+        </section>
+    </main>
+
+    <footer id="beheer-footer">
+        <p>&copy; 2024 Beheer Stagepagina</p>
+    </footer>
+
+    <script>
+        // Laad bestaande inhoud (indien beschikbaar)
+        document.addEventListener("DOMContentLoaded", () => {
+            const opgeslagenInhoud = localStorage.getItem("stageInhoud");
+            const paginaEditor = document.getElementById("pagina-editor");
+
+            if (opgeslagenInhoud) {
+                paginaEditor.value = opgeslagenInhoud;
+            } else {
+                paginaEditor.value = "<p>Welkom op de stagepagina. Pas deze inhoud aan via de beheerpagina.</p>";
+            }
+
+            // Opslaan van nieuwe inhoud
+            const opslaanButton = document.getElementById("opslaan-button");
+            opslaanButton.addEventListener("click", () => {
+                const nieuweInhoud = paginaEditor.value;
+                localStorage.setItem("stageInhoud", nieuweInhoud);
+                alert("De inhoud van de stagepagina is opgeslagen.");
+            });
+        });
+    </script>
+</body>
+</html>
