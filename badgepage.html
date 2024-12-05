@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventus Badges</title>
+    <link rel="stylesheet" href="CSS/badgepage.css?v=1.0.1">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/59/Woordlogo_payoff_Aventus_kleur.jpg" width="175px" height="60px">
+        </div>
+        <button class="menu-button" id="menu-toggle">☰</button>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="badgepage.html">Badges</a></li>
+            <li><a href="voortgang.html">Voortgang</a></li>
+            <li><a id="auth-link" href="login.html">login</a></li>
+        </ul>
+        
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <h1 class="badges-title">Alle badges:</h1>
+        <div class="badges-container" id="badges-container">
+            <!-- Badges will be loaded here -->
+        </div>
+    </main>
+
+    <script>
+        // Sidebar toggle functionality
+        document.getElementById('menu-toggle').addEventListener('click', function () {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        });
+
+    // Function to update the sidebar based on the user's session status
+    async function updateSidebar() {
+        try {
+            // Fetch session status from the server
+            const response = await fetch('session_status.php');
+            const result = await response.json();
+
+            const authLink = document.getElementById('auth-link');
+            if (result.loggedIn) {
+                // If logged in, change to Logout
+                authLink.textContent = 'Logout';
+                authLink.href = 'logout.php';
+            } else {
+                // If not logged in, show Login
+                authLink.textContent = 'Login';
+                authLink.href = 'login.html';
+            }
+        } catch (error) {
+            console.error('Error checking session status:', error);
+        }
+    }
+
+    // Call updateSidebar on page load
+    updateSidebar();
+        // Fetch badges for the logged-in student
+// Fetch badges for the logged-in user
+fetch('showbadge.php')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const container = document.getElementById('badges-container');
+            container.innerHTML = ''; // Clear previous badges
+
+            data.badges.forEach(badge => {
+                const badgeElement = document.createElement('a');
+                badgeElement.classList.add('badge');
+                badgeElement.href = `badge_details.php?id=${badge.id}`;
+                badgeElement.style.backgroundImage = `url('${badge.path}')`;
+                container.appendChild(badgeElement);
+            });
+        } else {
+            console.error('Error fetching badges:', data.message);
+            alert(data.message);
+        }
+    })
+    .catch(error => console.error('Error during fetch:', error));
+
+    </script>
+</body>
+</html>

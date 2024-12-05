@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Registreren</title>
+    <link rel="stylesheet" href="CSS/login.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Login</h1>
+        <form id="login-form">
+            <label for="student_name">Student Naam:</label>
+            <input type="text" id="student_name" name="student_name" required>
+            <label for="password">Wachtwoord:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p>Nog geen account? <a href="#" id="toggle-register">Registreren</a></p>
+
+        <div id="register-section" style="display:none;">
+            <h1>Registreren</h1>
+            <form id="register-form">
+                <label for="reg_student_name">Student Naam:</label>
+                <input type="text" id="reg_student_name" name="student_name" required>
+                <label for="reg_email">E-mail:</label>
+                <input type="email" id="reg_email" name="email" required>
+                <label for="reg_password">Wachtwoord:</label>
+                <input type="password" id="reg_password" name="password" required>
+                <button type="submit">Registreren</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Toggle between login and register
+        document.getElementById('toggle-register').addEventListener('click', function() {
+            document.getElementById('register-section').style.display = 'block';
+        });
+
+        // Login form submission
+        document.getElementById('login-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    try {
+        const response = await fetch('login.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include', // Important: Send cookies with the request
+    body: JSON.stringify({
+        student_name: document.getElementById('student_name').value,
+        password: document.getElementById('password').value,
+    }),
+});
+
+
+        if (response.type === 'opaqueredirect') {
+            console.error('Redirect detected:', response);
+            alert('Redirect detected. Check the server configuration.');
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Server response:', result);
+        if (result.success) {
+            location.href = 'badgepage.html';
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        console.error('Error during fetch:', error);
+        alert('Er is een probleem opgetreden bij het inloggen.');
+    }
+});
+
+
+
+        // Register form submission
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const response = await fetch('register.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    student_name: document.getElementById('reg_student_name').value,
+                    email: document.getElementById('reg_email').value,
+                    password: document.getElementById('reg_password').value,
+                }),
+            });
+            const result = await response.json();
+            alert(result.message);
+        });
+    </script>
+</body>
+</html>
